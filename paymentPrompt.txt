@@ -1,0 +1,176 @@
+From the logs you’ve shared, it seems like the `payment_intent` field in the `Stripe session` object is `null`. This is why the `transactionId` is not being set correctly in your `Payment` model. 
+
+The issue arises because Stripe doesn't immediately generate the `payment_intent` until the checkout session is actually completed or processed. The `payment_intent` ID is expected to be available **after** a successful payment attempt is made. 
+
+### Here’s how to resolve this:
+
+#### 1. **Session Creation in Stripe**
+
+When you create a checkout session with Stripe, you are passing a list of `line_items` and other configuration parameters. You’ll only get the `payment_intent` after a payment is made or the session is completed.
+
+The `payment_intent` in the session is typically generated only after the session is actually used to complete a transaction.
+
+**Solution:**
+
+- Instead of relying on the `payment_intent` being in the `session` response immediately (since it’s null in your case), you'll need to update your code to ensure that when the payment is completed, the `payment_intent` is retrieved from Stripe.
+
+This can be handled in the **webhook** after the payment session has been completed.
+
+#### 2. **Updating the `orderPayment` Route**
+
+The `payment_intent` field is typically not available during the creation of the session because the payment hasn't been processed yet. The `payment_intent` is linked to the payment after the user proceeds with the payment.
+
+If you want to access the `payment_intent` before the payment is completed, you will need to create the session in a slightly different way. However, Stripe doesn't provide the `payment_intent` immediately at the point of session creation.
+
+### **Modify your `orderPayment` Controller:**
+
+1. The Stripe session will not have `payment_intent` in it at the time of session creation. So, you should **wait until the payment session is completed** before saving the `payment_intent` to your `Payment` document.
+2. Use the `payment_intent` after the payment is processed and the webhook is triggered.
+
+### **Steps to Fix:**
+
+#### Step 1: Update the `orderPayment` controller
+
+You don't need to worry about the `payment_intent` at this point. The main goal is to create a session and allow the user to make the payment.
+
+You **don't need to store the `payment_intent` immediately** at this point, because it will be available once the session is completed.
+
+```javascript
+export const orderPayment = async (req, res) => {
+  const { orderId, paymentMethod } = req.body;
+  const userId = req.user._id;
+  try {
+    const order = await Order.findById(orderId).populate("item.productId");
+    if (!order) {
+      return res.status(404).json({ status: false, msg: "Order Not Found" });
+    }
+
+    const totalAmount = order.item.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+
+    if (paymentMethod === "card") {
+      const lineItems = order.item.map((item) => ({
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: item.productId.name,
+            images: [
+              `${process.env.TEMP_SERVER_IMAGE_URL}/product/image/${item.productId.image}`,
+            ],
+          },
+          unit_amount: Math.round(item.price * 100), // Convert into paisa
+        },
+        quantity: item.quantity,
+      }));
+
+      // Create Stripe session
+      const session = await generatePaymentSession(lineItems);
+      if (!session || !session.url) {
+        return res.status(500).json({ status: false, msg: "Stripe session creation failed" });
+      }
+
+      // Create payment record without the payment_intent
+      const payment = new Payment({
+        userId,
+        orderId,
+        amount: totalAmount,
+        status: "pending",
+        paymentMethod,
+        transactionId: null, // Leave as null here
+      });
+      await payment.save();
+
+      return res.status(200).json({ status: true, paymentUrl: session.url, paymentId: payment._id });
+    } else {
+      // For cash on delivery payment method
+      order.status = "pending";
+      await order.save();
+      return res.status(200).json({
+        status: true,
+        msg: "Order placed successfully. Pay on delivery.",
+        paymentid: payment._id,
+      });
+    }
+  } catch (error) {
+    console.error("Error in payment Controller: ", error);
+    res.status(500).json({ status: false, msg: "Internal Server Error" });
+  }
+};
+```
+
+#### Step 2: Webhook Handling
+
+Once the Stripe session is completed, the `payment_intent` will be available in the webhook. The webhook will be triggered after the user makes a payment, and this is where you can update the `transactionId` in the `Payment` model.
+
+```javascript
+const handleStripeWebhook = async (req) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      const paymentIntentId = session.payment_intent; // Retrieve payment_intent from session
+
+      // Find the Payment record using the payment_intent
+      const payment = await Payment.findOne({ transactionId: paymentIntentId });
+      if (payment) {
+        // Update the payment status based on the payment_intent status
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const paymentStatus = paymentIntent.status;
+
+        switch (paymentStatus) {
+          case 'succeeded':
+            payment.status = "success";
+            break;
+          case 'requires_action':
+          case 'requires_payment_method':
+            payment.status = 'pending';
+            break;
+          case 'canceled':
+            payment.status = 'failed';
+            break;
+          default:
+            payment.status = 'failed';
+        }
+
+        payment.transactionId = paymentIntentId; // Save the payment_intent here
+        await payment.save();
+
+        // Find the associated order and update its status if necessary
+        const order = await Order.findById(payment.orderId);
+        if (order && paymentStatus === 'succeeded') {
+          order.status = 'confirmed';
+          await order.save();
+        }
+      }
+
+      return { received: true };
+    } else {
+      console.log(`Unhandled event type: ${event.type}`);
+      return { received: true };
+    }
+  } catch (error) {
+    console.error("Webhook Error: ", error);
+    throw new Error(`Webhook Error: ${error.message}`);
+  }
+};
+```
+
+### Explanation:
+
+1. **Order Payment (`orderPayment` Route):**
+   - You create the Stripe checkout session (`generatePaymentSession`) without worrying about the `payment_intent` initially.
+   - You create a `Payment` record in your database without a `transactionId` (it’s `null` initially).
+
+2. **Webhook Handling (`handleStripeWebhook`):**
+   - After the user completes the payment, Stripe sends a webhook event (`checkout.session.completed`).
+   - You can retrieve the `payment_intent` from the session, update the `Payment` model with the `payment_intent` and its status, and update the `Order` status accordingly.
+
+### Conclusion:
+
+- **The `payment_intent` is only available after the user completes the checkout session**, so you cannot store it at the time of session creation.
+- **Wait for the Stripe webhook** to get the `payment_intent` and then update your `Payment` model with the `transactionId`.

@@ -1,0 +1,7 @@
+lt --port 5000 --subdomain mug-musedomain
+
+for password:
+https://loca.lt/mytunnelpassword
+
+image for testing
+https://mug-musedomain.loca.lt/product/image/1741585049810-Americano.jpeg
