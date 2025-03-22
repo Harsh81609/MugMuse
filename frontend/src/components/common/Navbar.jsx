@@ -47,7 +47,7 @@ export default function Navbar() {
       <div className="navbar-start">
         <Link to="/" className="cursor-pointer flex flex-row justify-center items-center">
           <img src={logoText} alt="Mug & Muse" className="w-46 h-9" />
-          <img src={Logo} alt="Logo" className="size-14" />
+          <img src={Logo} alt="Logo" className="w-24 h-16" />
         </Link>
       </div>
       <div className="navbar-center flex items-center">
@@ -61,7 +61,7 @@ export default function Navbar() {
         </div>
       </div>
       {user ? (
-        <div className='navbar-end flex items-center gap-3'>
+        <div className='navbar-end flex items-center justify-end gap-2'>
           <div className="relative w-16 h-16 cursor-pointer">
             <div className="dropdown">
               <div className="ring-primary ring-offset-base-100 w-11 h-10 mt-3 rounded-full ring ring-offset-2 flex items-center justify-center bg-gray-200 overflow-hidden shadow-md">
@@ -83,8 +83,8 @@ export default function Navbar() {
         </div>
       ) : (
         <div className="navbar-end">
-          <Link to="/login" className="btn bg-[#F8F1E5] text-amber-950 hover:bg-[#8B4513] hover:text-white mx-0.5">Login</Link>
-          <Link to="/register" className="btn bg-[#F8F1E5] text-amber-950 hover:bg-[#8B4513] hover:text-white mx-0.5">Register</Link>
+          <Link to="/login" className="btn bg-[#F8F1E5] text-amber-950 hover:bg-[#8B4513] hover:text-white mx-1">Login</Link>
+          <Link to="/register" className="btn bg-[#F8F1E5] text-amber-950 hover:bg-[#8B4513] hover:text-white mx-1">Register</Link>
         </div>
       )}
     </header>

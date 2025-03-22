@@ -1,17 +1,17 @@
 import axios from "axios";
 
-const serverUrl = import.meta.env.VITE_SERVER_URL;
+const serverUrl = import.meta.env.VITE_SERVER_URL + "/api/admin";
 
 export const getStats = async (data) => {
-    const response = await axios.post(`${serverUrl}/api/admin/stats`, data, {
-        withCredentials: true
-    })
-    return response;
-}
+  const response = await axios.post(`${serverUrl}/stats`, data, {
+    withCredentials: true,
+  });
+  return response;
+};
 
 export const registorAdmin = async (data) => {
-    const response = await axios.post(`${serverUrl}/api/admin/create-admin`, data, {
-        withCredentials: true
-    })
-    return response;
-}
+  const reponse = await axios.post(`${serverUrl}/create-admin`, data, {
+    withCredentials: true,
+  });
+  return response;
+};

@@ -51,7 +51,7 @@ export default function Login() {
               id="email"
               name="email"
               placeholder="abc123@gmail.com"
-              className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="w-full">
@@ -62,7 +62,7 @@ export default function Login() {
                 id="password"
                 name="password"
                 placeholder="password"
-                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <div className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer">
                 {show ? (
@@ -84,7 +84,7 @@ export default function Login() {
           >
             Login
           </button>
-          <div className="text-center text-sm mt-4">
+          <div className="text-center text-sm text-black mt-4">
             Don't have an account?{' '}
             <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
           </div>

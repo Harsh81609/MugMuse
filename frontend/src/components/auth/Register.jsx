@@ -59,12 +59,12 @@ export default function Register() {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lvh">
+            <div className="bg-white py-4 px-8 rounded-lg shadow-lg max-w-2xl">
                 <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Register</h2>
                 <form onSubmit={handleAction} method="post" className="space-y-6">
                     <div className="flex flex-row justify-center items-center">
-                        <div className="relative w-24 h-24 cursor-pointer">
-                            <div className="ring-primary ring-offset-base-100 w-24 h-24 rounded-full ring ring-offset-2 flex items-center justify-center bg-gray-200 overflow-hidden shadow-md">
+                        <div className="relative w-16 h-16 cursor-pointer">
+                            <div className="ring-primary ring-offset-base-100 w-16 h-16 rounded-full ring ring-offset-2 flex items-center justify-center bg-gray-200 overflow-hidden shadow-md">
                                 {selectedImage ? (
                                     <img src={selectedImage} className="rounded-full w-full h-full object-cover" alt="Profile" />
                                 ) : (
@@ -76,7 +76,7 @@ export default function Register() {
                                     e.stopPropagation();
                                     fileInputRef.current.click();
                                 }}>
-                                <Pencil className="h-5 w-5 text-gray-700 hover:text-white" />
+                                <Pencil className="h-3 w-3 text-gray-700 hover:text-white" />
                             </div>
                             <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
                         </div>
@@ -89,7 +89,7 @@ export default function Register() {
                                 id="name"
                                 name="name"
                                 placeholder="John Doe"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div className="w-full">
@@ -99,7 +99,7 @@ export default function Register() {
                                 name="email"
                                 id="email"
                                 placeholder="abc123@gmail.com"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default function Register() {
                                 type="password"
                                 id="password"
                                 name="password"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div className="w-full">
@@ -119,7 +119,7 @@ export default function Register() {
                                 type="password"
                                 id="cpassword"
                                 name="cpassword"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                     </div>
@@ -129,7 +129,7 @@ export default function Register() {
                             <textarea
                                 id="address"
                                 name="address"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Your address here"
                             />
                         </div>
@@ -139,7 +139,7 @@ export default function Register() {
                                 type="number"
                                 id="phone"
                                 name="phone"
-                                className="w-full p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full bg-white text-black p-3 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="123-456-7890"
                             />
                         </div>
@@ -150,7 +150,7 @@ export default function Register() {
                     >
                         Register
                     </button>
-                    <div className="text-center text-sm mt-4">
+                    <div className="text-center text-sm text-black mt-4">
                         Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
                     </div>
                 </form>

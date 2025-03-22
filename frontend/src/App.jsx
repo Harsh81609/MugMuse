@@ -1,27 +1,24 @@
-import React from 'react';
-import { RouterProvider } from 'react-router-dom';
-import { routes } from './routerConfig';
-import { Bounce, ToastContainer } from 'react-toastify';
+import React from 'react'
+import { RouterProvider } from 'react-router-dom'
+import  {Bounce,ToastContainer} from 'react-toastify'
+import { routes } from './routerConfig'
 
-function App() {
+export default function App() {
   return (
     <>
       <RouterProvider router={routes} />
-      <ToastContainer
-        position="top-right"
+      <ToastContainer 
+        position='top-right'
         autoClose={5000}
         hideProgressBar={false}
-        newestOnTop={false}
         closeOnClick={false}
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme='colored'
         transition={Bounce}
       />
     </>
   )
 }
-
-export default App

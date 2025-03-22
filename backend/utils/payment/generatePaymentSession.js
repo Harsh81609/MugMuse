@@ -11,8 +11,8 @@ const generatePaymentSession = async (lineItems) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.BASE_URL}/payment/verify?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.BASE_URL}/payment/cancel`,
+      success_url: `${process.env.BASE_URL}/payment?status=verify&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.BASE_URL}/payment?status=cancel`,
     });
     return session;
   } catch (error) {

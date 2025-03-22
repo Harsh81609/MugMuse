@@ -87,13 +87,13 @@ export default function PlaceOrder() {
                 <label className="block text-lg font-medium text-gray-700">Delivery Address</label>
                 <input
                     type="text"
-                    className="w-full mt-2 p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    className="w-full mt-2 p-3 bg-white text-black border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
                     required
                 />
             </div>
-            <div className="mt-6 p-5 bg-gray-100 rounded-lg shadow-sm">
+            <div className="mt-6 p-5 bg-gray-100 text-black rounded-lg shadow-sm">
                 <div className="grid grid-cols-2 gap-4 text-lg font-semibold">
                     <p>Product Name:</p> <p>{product.name}</p>
                     <p>Price (per unit):</p> <p className="text-indigo-600 font-bold">₹{product.price}</p>
@@ -115,7 +115,7 @@ export default function PlaceOrder() {
                     <p>Total Price:</p> <p className="text-green-600 font-bold">₹{product.price * quantity}</p>
                     <p>Payment Method:</p>
                     <div>
-                        <select name="payment-method" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                        <select className="bg-gray-200 text-black" name="payment-method" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
                             <option value="card">Card</option>
                             <option value="cod">Cash On Delivery</option>
                         </select>

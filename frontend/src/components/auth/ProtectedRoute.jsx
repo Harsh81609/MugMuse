@@ -25,7 +25,7 @@ export default function ProtectedRoute() {
         verifyAuth();
     }, []);
 
-    if (loading) return <p>Loading...</p>; // Show a loading state while checking authentication
+    if (loading) return <p>Loading...</p>; 
 
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }
