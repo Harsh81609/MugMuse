@@ -117,7 +117,7 @@ export default function PlaceOrder() {
                     <div>
                         <select className="bg-gray-200 text-black" name="payment-method" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
                             <option value="card">Card</option>
-                            <option value="cod">Cash On Delivery</option>
+                            <option value="cash on delivery">Cash On Delivery</option>
                         </select>
                     </div>
                 </div>

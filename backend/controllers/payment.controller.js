@@ -19,6 +19,14 @@ export const orderPayment = async (req, res) => {
       (sum, item) => sum + item.price * item.quantity,
       0
     );
+    
+    const payment = new Payment({
+      userId,
+      orderId,
+      amount: totalAmount,
+      status: "pending",
+      paymentMethod,
+    });
 
     if (paymentMethod === "card") {
       // For card payment method
@@ -47,14 +55,7 @@ export const orderPayment = async (req, res) => {
         return res.status(500).json({ status: false, msg: "Stripe session creation failed" });
       }
 
-      const payment = new Payment({
-        userId,
-        orderId,
-        amount: totalAmount,
-        status: "pending",
-        paymentMethod,
-        transactionId: session.id,
-      });
+      payment.transactionId = session.id;
       await payment.save();
 
       return res
@@ -65,6 +66,7 @@ export const orderPayment = async (req, res) => {
       // For cash on delivery payment method
       order.status = "pending";
       await order.save();
+      await payment.save();
       return res.status(200).json({
         status: true,
         msg: "Order placed successfully. Pay on delivery.",

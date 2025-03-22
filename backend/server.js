@@ -1,5 +1,5 @@
 import express from "express";
-import doltenv from "dotenv";
+import dotenv from "dotenv";
 import cors from "cors";
 import path from "path"
 import { connectDB } from "./config/db.js";
@@ -11,9 +11,9 @@ import adminRoutes from './routes/admin.router.js';
 import orderRoutes from './routes/order.route.js';
 import cookieParser from "cookie-parser";
 
-console.log("Initial NODE_ENV:", process.env.NODE_ENV);
+dotenv.config({override:false});
 
-doltenv.config();
+console.log("Initial NODE_ENV:", process.env.NODE_ENV);
 const app = express();
 const __dirname = path.resolve();
 
